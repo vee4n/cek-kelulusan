@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Pengumuman Kelulusan | SMA Negeri 1 Contoh",
+  title: "Cek Kelulusan | SMP St. Cicilia Sunter",
   description:
-    "Portal resmi pengumuman kelulusan siswa SMA Negeri 1 Contoh Tahun Pelajaran 2023/2024. Cek status kelulusan Anda dengan memasukkan nama dan nomor induk siswa.",
-  keywords: ["kelulusan", "pengumuman kelulusan", "SMA", "siswa"],
-  robots: "noindex, nofollow", // Prevent indexing of student data portal
+    "Portal resmi pengumuman kelulusan siswa SMP St. Cicilia Sunter, Jakarta Utara. Tahun Pelajaran 2025/2026.",
+  keywords: ["kelulusan", "pengumuman kelulusan", "SMP", "St. Cicilia", "Jakarta Utara", "siswa"],
+  robots: "noindex, nofollow",
 };
 
 export default function RootLayout({
