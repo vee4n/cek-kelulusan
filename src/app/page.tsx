@@ -52,7 +52,7 @@ function CountdownUnit({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col items-center">
       <div
-        className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl flex items-center justify-center font-serif text-2xl sm:text-3xl font-bold"
+        className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg flex items-center justify-center font-serif text-xl sm:text-2xl font-bold"
         style={{
           background: "rgba(255,255,255,0.9)",
           border: "1px solid rgba(27,46,94,0.15)",
@@ -127,11 +127,11 @@ function Countdown() {
       {/* Countdown units */}
       <div className="flex items-start justify-center gap-3 sm:gap-4 mb-6">
         <CountdownUnit value={timeLeft.days} label="Hari" />
-        <div className="text-2xl font-bold mt-4" style={{ color: "rgba(27,46,94,0.3)" }}>:</div>
+        <div className="text-xl font-bold mt-3" style={{ color: "rgba(27,46,94,0.3)" }}>:</div>
         <CountdownUnit value={timeLeft.hours} label="Jam" />
-        <div className="text-2xl font-bold mt-4" style={{ color: "rgba(27,46,94,0.3)" }}>:</div>
+        <div className="text-xl font-bold mt-3" style={{ color: "rgba(27,46,94,0.3)" }}>:</div>
         <CountdownUnit value={timeLeft.minutes} label="Menit" />
-        <div className="text-2xl font-bold mt-4" style={{ color: "rgba(27,46,94,0.3)" }}>:</div>
+        <div className="text-xl font-bold mt-3" style={{ color: "rgba(27,46,94,0.3)" }}>:</div>
         <CountdownUnit value={timeLeft.seconds} label="Detik" />
       </div>
 
