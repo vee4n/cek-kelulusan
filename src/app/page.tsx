@@ -200,7 +200,7 @@ export default function Home() {
             />
             <h1 className="font-serif text-2xl sm:text-3xl font-bold leading-tight mb-1"
               style={{ color: "#1B2E5E" }}>
-              SMP St. Cicilia Sunter
+              SMP St. Cicilia I
             </h1>
             <p className="text-sm font-medium tracking-wider"
               style={{ color: "rgba(232,160,32,0.9)" }}>
