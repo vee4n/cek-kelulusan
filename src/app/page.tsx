@@ -1,7 +1,7 @@
 // src/app/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoginForm from "@/components/LoginForm";
 import ResultCard from "@/components/ResultCard";
 
@@ -11,6 +11,9 @@ interface StudentData {
   nisn: string;
   statusKelulusan: "LULUS" | "TIDAK_LULUS" | "BELUM_DITENTUKAN";
 }
+
+// July 1 2026 00:00:00 WIB (UTC+7)
+const UNLOCK_DATE = new Date("2026-06-30T17:00:00.000Z");
 
 function GoldDivider() {
   return (
@@ -44,8 +47,128 @@ function BackgroundDecor() {
   );
 }
 
+// ── Countdown block ──────────────────────────────────────────────────────────
+function CountdownUnit({ value, label }: { value: number; label: string }) {
+  return (
+    <div className="flex flex-col items-center">
+      <div
+        className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl flex items-center justify-center font-serif text-2xl sm:text-3xl font-bold"
+        style={{
+          background: "rgba(255,255,255,0.9)",
+          border: "1px solid rgba(27,46,94,0.15)",
+          boxShadow: "0 4px 20px rgba(27,46,94,0.08)",
+          color: "#1B2E5E",
+        }}
+      >
+        {String(value).padStart(2, "0")}
+      </div>
+      <span className="text-xs mt-2 font-medium tracking-widest uppercase"
+        style={{ color: "rgba(27,46,94,0.45)" }}>
+        {label}
+      </span>
+    </div>
+  );
+}
+
+function Countdown() {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const calculate = () => {
+      const now = new Date();
+      const diff = UNLOCK_DATE.getTime() - now.getTime();
+      if (diff <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+      setTimeLeft({
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((diff % (1000 * 60)) / 1000),
+      });
+    };
+
+    calculate();
+    const interval = setInterval(calculate, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="text-center">
+      {/* Lock icon */}
+      <div
+        className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
+        style={{
+          background: "rgba(232,160,32,0.1)",
+          border: "1px solid rgba(232,160,32,0.3)",
+        }}
+      >
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="11" width="18" height="11" rx="2" stroke="#E8A020" strokeWidth="1.5" />
+          <path d="M7 11V7a5 5 0 0110 0v4" stroke="#E8A020" strokeWidth="1.5" strokeLinecap="round" />
+          <circle cx="12" cy="16" r="1.5" fill="#E8A020" />
+        </svg>
+      </div>
+
+      <p className="text-xs font-semibold tracking-[0.25em] uppercase mb-3"
+        style={{ color: "rgba(232,160,32,0.8)" }}>
+        Pengumuman Belum Dibuka
+      </p>
+
+      <p className="font-serif text-lg font-bold mb-1" style={{ color: "#1B2E5E" }}>
+        Pengumuman kelulusan akan dibuka pada
+      </p>
+      <p className="font-serif text-xl font-bold mb-6"
+        style={{ color: "#E8A020" }}>
+        1 Juli 2026 pukul 00.00 WIB
+      </p>
+
+      {/* Countdown units */}
+      <div className="flex items-start justify-center gap-3 sm:gap-4 mb-6">
+        <CountdownUnit value={timeLeft.days} label="Hari" />
+        <div className="text-2xl font-bold mt-4" style={{ color: "rgba(27,46,94,0.3)" }}>:</div>
+        <CountdownUnit value={timeLeft.hours} label="Jam" />
+        <div className="text-2xl font-bold mt-4" style={{ color: "rgba(27,46,94,0.3)" }}>:</div>
+        <CountdownUnit value={timeLeft.minutes} label="Menit" />
+        <div className="text-2xl font-bold mt-4" style={{ color: "rgba(27,46,94,0.3)" }}>:</div>
+        <CountdownUnit value={timeLeft.seconds} label="Detik" />
+      </div>
+
+      <p className="text-xs leading-relaxed" style={{ color: "rgba(27,46,94,0.4)" }}>
+        Harap bersabar. Hasil kelulusan akan dapat diakses tepat pada waktu yang telah ditentukan.
+      </p>
+    </div>
+  );
+}
+
+// ── Main Page ────────────────────────────────────────────────────────────────
 export default function Home() {
   const [studentData, setStudentData] = useState<StudentData | null>(null);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [serverChecked, setServerChecked] = useState(false);
+
+  // Check unlock status from server (prevents client clock manipulation)
+  useEffect(() => {
+    const checkUnlock = async () => {
+      try {
+        const res = await fetch("/api/check-unlock");
+        const data = await res.json();
+        setIsUnlocked(data.unlocked);
+      } catch {
+        // Fallback to client time if server unreachable
+        setIsUnlocked(new Date() >= UNLOCK_DATE);
+      } finally {
+        setServerChecked(true);
+      }
+    };
+
+    checkUnlock();
+
+    // Re-check every 30 seconds in case we're close to unlock time
+    const interval = setInterval(checkUnlock, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLoginSuccess = (data: StudentData) => {
     setStudentData(data);
@@ -66,18 +189,15 @@ export default function Home() {
         {/* ── Header ── */}
         <header className="text-center pt-12 pb-6 px-4">
           <div className="animate-fade-in-up" style={{ opacity: 0, animationFillMode: "forwards" }}>
-
             <p className="text-xs font-semibold tracking-[0.3em] uppercase mb-6"
               style={{ color: "rgba(27,46,94,0.5)" }}>
               Sistem Informasi Pengumuman Kelulusan
             </p>
-
             <img
               src="/logo.png"
               alt="Logo Sekolah St. Cicilia"
               className="mx-auto mb-4 w-20 h-20 object-contain"
             />
-
             <h1 className="font-serif text-2xl sm:text-3xl font-bold leading-tight mb-1"
               style={{ color: "#1B2E5E" }}>
               SMP St. Cicilia Sunter
@@ -88,7 +208,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Announcement banner */}
           <div
             className="inline-block mt-6 px-6 py-2 rounded-sm animate-fade-in-up delay-200"
             style={{
@@ -123,7 +242,19 @@ export default function Home() {
                 backdropFilter: "blur(12px)",
               }}
             >
-              {!studentData ? (
+              {/* Loading state */}
+              {!serverChecked ? (
+                <div className="text-center py-8">
+                  <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-3"
+                    style={{ borderColor: "#E8A020", borderTopColor: "transparent" }} />
+                  <p className="text-sm" style={{ color: "rgba(27,46,94,0.4)" }}>Memuat...</p>
+                </div>
+
+              ) : !isUnlocked ? (
+                /* Countdown screen */
+                <Countdown />
+
+              ) : !studentData ? (
                 <>
                   <div className="text-center mb-2">
                     <h2 className="font-serif text-xl font-bold mb-1" style={{ color: "#1B2E5E" }}>
@@ -133,10 +264,10 @@ export default function Home() {
                       Masukkan nama dan nomor induk siswa untuk melihat hasil kelulusan Anda.
                     </p>
                   </div>
-
                   <GoldDivider />
                   <LoginForm onSuccess={handleLoginSuccess} />
                 </>
+
               ) : (
                 <>
                   <div className="text-center mb-2">
@@ -147,7 +278,6 @@ export default function Home() {
                       Tahun Pelajaran 2025/2026
                     </p>
                   </div>
-
                   <GoldDivider />
                   <ResultCard data={studentData} onReset={handleReset} />
                 </>
