@@ -204,7 +204,7 @@ export default function Home() {
             </h1>
             <p className="text-sm font-medium tracking-wider"
               style={{ color: "rgba(232,160,32,0.9)" }}>
-              Jl. Ancol Sel. II No.10 8, RT.8/RW.7, Sunter Agung, Kec. Tj. Priok
+              Jl. Ancol Selatan 2 No.17 Rt 008/07, Tanjung Priok, Jakarta Utara
             </p>
           </div>
 
