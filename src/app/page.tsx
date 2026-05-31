@@ -13,7 +13,7 @@ interface StudentData {
 }
 
 // July 1 2026 00:00:00 WIB (UTC+7)
-const UNLOCK_DATE = new Date("2026-06-01T17:00:00.000Z");
+const UNLOCK_DATE = new Date("2026-07-02T03:00:00.000Z");
 
 function GoldDivider() {
   return (
@@ -121,7 +121,7 @@ function Countdown() {
       </p>
       <p className="font-serif text-xl font-bold mb-6"
         style={{ color: "#E8A020" }}>
-        2 Juni 2026 pukul 00.00 WIB
+        2 Juni 2026 pukul 10.00 WIB
       </p>
 
       {/* Countdown units */}
