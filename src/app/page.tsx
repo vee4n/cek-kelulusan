@@ -13,7 +13,7 @@ interface StudentData {
 }
 
 // July 1 2026 00:00:00 WIB (UTC+7)
-const UNLOCK_DATE = new Date("2026-07-02T03:00:00.000Z");
+const UNLOCK_DATE = new Date("2026-06-02T03:00:00.000Z");
 
 function GoldDivider() {
   return (

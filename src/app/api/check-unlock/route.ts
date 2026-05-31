@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 
 // July 1 2026 00:00:00 WIB (UTC+7) = June 30 2026 17:00:00 UTC
-const UNLOCK_DATE = new Date("2026-07-02T03:00:00.000Z");
+const UNLOCK_DATE = new Date("2026-06-02T03:00:00.000Z");
 
 export async function GET() {
   const now = new Date();
