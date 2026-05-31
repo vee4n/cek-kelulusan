@@ -121,7 +121,7 @@ function Countdown() {
       </p>
       <p className="font-serif text-xl font-bold mb-6"
         style={{ color: "#E8A020" }}>
-        1 Juli 2026 pukul 00.00 WIB
+        2 Juni 2026 pukul 00.00 WIB
       </p>
 
       {/* Countdown units */}
